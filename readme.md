@@ -2,7 +2,7 @@
 This tool will bypass the lock-screen passcode on age old iOS 3.1.3 devices (would pobably also work on lower versions, didn't try tho). 
 The code is heavly based on the Spirit Jailbreak sourcecode by comex <3. 
 
-I modfied the MobileBackupCopy Exploit (see iPhone Wiki) in a way that the restore process will null-out the /var/Keychains/keychain-2.db file, effecifly removing the lock-screen passcode without any further loss of data. 
+This is an implementation of the MobileBackupCopy Exploit. It is used to null-out the /var/Keychains/keychain-2.db file, effecifly removing the lock-screen passcode without any further loss of data. 
 
 The only downside of this method is that all WiFi Passwords will also be lost in the process. Everything else will be accessable. 
 
