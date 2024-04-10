@@ -177,7 +177,7 @@ typedef struct am_bootloader_control_packet {
  *   Public routines
  * ------------------------------------------------------------------------- */
 
-void AMDSetLogLevel(int level);
+void (*AMDSetLogLevel)(int level);
 
 /*  Registers a notification with the current run loop. The callback gets
  *  copied into the notification struct, as well as being registered with the
@@ -192,7 +192,7 @@ void AMDSetLogLevel(int level);
  *      MDERR_OUT_OF_MEMORY if we ran out of memory
  */
 
-mach_error_t AMDeviceNotificationSubscribe(am_device_notification_callback
+mach_error_t (*AMDeviceNotificationSubscribe)(am_device_notification_callback
     callback, unsigned int unused0, unsigned int unused1, void* //unsigned int
     dn_unknown3, struct am_device_notification **notification);
 
@@ -206,7 +206,7 @@ mach_error_t AMDeviceNotificationSubscribe(am_device_notification_callback
  *      MDERR_INVALID_ARGUMENT  if USBMuxConnectByPort returned 0xffffffff
  */
 
-mach_error_t AMDeviceConnect(struct am_device *device);
+mach_error_t (*AMDeviceConnect)(struct am_device *device);
 
 /*  Calls PairingRecordPath() on the given device, than tests whether the path
  *  which that function returns exists. During the initial connect, the path
@@ -217,7 +217,7 @@ mach_error_t AMDeviceConnect(struct am_device *device);
  *      1   if it did
  */
 
-int AMDeviceIsPaired(struct am_device *device);
+int (*AMDeviceIsPaired)(struct am_device *device);
 
 /*  iTunes calls this function immediately after testing whether the device is
  *  paired. It creates a pairing file and establishes a Lockdown connection.
@@ -228,7 +228,7 @@ int AMDeviceIsPaired(struct am_device *device);
  *      MDERR_DICT_NOT_LOADED   if the load_dict() call failed
  */
 
-mach_error_t AMDeviceValidatePairing(struct am_device *device);
+mach_error_t (*AMDeviceValidatePairing)(struct am_device *device);
 
 /*  Creates a Lockdown session and adjusts the device structure appropriately
  *  to indicate that the session has been started. iTunes calls this function
@@ -240,7 +240,7 @@ mach_error_t AMDeviceValidatePairing(struct am_device *device);
  *      MDERR_DICT_NOT_LOADED   if the load_dict() call failed
  */
 
-mach_error_t AMDeviceStartSession(struct am_device *device);
+mach_error_t (*AMDeviceStartSession)(struct am_device *device);
 
 /* Starts a service and returns a handle that can be used in order to further
  * access the service. You should stop the session and disconnect before using
@@ -257,11 +257,11 @@ mach_error_t AMDeviceStartSession(struct am_device *device);
  *      MDERR_INVALID_ARGUMENT  if the Lockdown conn has not been established
  */
 
-mach_error_t AMDeviceStartService(struct am_device *device, CFStringRef 
+mach_error_t (*AMDeviceStartService)(struct am_device *device, CFStringRef 
     service_name, service_conn_t *handle, unsigned int *
     unknown);
 
-mach_error_t AMDeviceStartHouseArrestService(struct am_device *device, CFStringRef identifier, void *unknown, service_conn_t *handle, unsigned int *what);
+mach_error_t (*AMDeviceStartHouseArrestService)(struct am_device *device, CFStringRef identifier, void *unknown, service_conn_t *handle, unsigned int *what);
 
 /* Stops a session. You should do this before accessing services.
  *
@@ -270,10 +270,10 @@ mach_error_t AMDeviceStartHouseArrestService(struct am_device *device, CFStringR
  *      MDERR_INVALID_ARGUMENT  if the Lockdown conn has not been established
  */
 
-mach_error_t AMDeviceStopSession(struct am_device *device);
+mach_error_t (*AMDeviceStopSession)(struct am_device *device);
 
 /* Opens an Apple File Connection. You must start the appropriate service
- * first with AMDeviceStartService(). In iTunes, io_timeout is 0.
+ * first with (*AMDeviceStartService(). In iTunes, io_timeout is 0.
  *
  * Returns:
  *      MDERR_OK                if successful
@@ -347,7 +347,7 @@ afc_error_t AFCConnectionClose(afc_connection *conn);
  *      4: $3ac73e-$3ac761, calls $3ac6b2(unknown1, 0, arg)
  */
 
-unsigned int AMRestoreRegisterForDeviceNotifications(
+unsigned int (*AMRestoreRegisterForDeviceNotifications)(
     am_restore_device_notification_callback dfu_connect_callback,
     am_restore_device_notification_callback recovery_connect_callback,
     am_restore_device_notification_callback dfu_disconnect_callback,
@@ -362,7 +362,7 @@ unsigned int AMRestoreRegisterForDeviceNotifications(
  * unused number.
  */
 
-unsigned int AMRestoreEnableFileLogging(char *path);
+unsigned int (*AMRestoreEnableFileLogging)(char *path);
 
 /* Initializes a new option dictionary to default values. Pass the constant
  * kCFAllocatorDefault as the allocator. The option dictionary looks as
@@ -385,7 +385,7 @@ unsigned int AMRestoreEnableFileLogging(char *path);
  *      NULL                    if out of memory
  */ 
 
-CFMutableDictionaryRef AMRestoreCreateDefaultOptions(CFAllocatorRef allocator);
+CFMutableDictionaryRef (*AMRestoreCreateDefaultOptions)(CFAllocatorRef allocator);
 
 /* ----------------------------------------------------------------------------
  *   Less-documented public routines
@@ -410,44 +410,44 @@ afc_error_t AFCKeyValueRead(struct afc_dictionary *dict, char **key, char **
     val);
 afc_error_t AFCKeyValueClose(struct afc_dictionary *dict);
 
-unsigned int AMRestorePerformRecoveryModeRestore(struct am_recovery_device *
+unsigned int (*AMRestorePerformRecoveryModeRestore)(struct am_recovery_device *
     rdev, CFDictionaryRef opts, void *callback, void *user_info);
-unsigned int AMRestorePerformRestoreModeRestore(struct am_restore_device *
+unsigned int (*AMRestorePerformRestoreModeRestore)(struct am_restore_device *
     rdev, CFDictionaryRef opts, void *callback, void *user_info);
 
-struct am_restore_device *AMRestoreModeDeviceCreate(unsigned int unknown0,
+struct am_restore_device* (*AMRestoreModeDeviceCreate)(unsigned int unknown0,
     unsigned int connection_id, unsigned int unknown1);
 
-unsigned int AMRestoreCreatePathsForBundle(CFStringRef restore_bundle_path,
+unsigned int (*AMRestoreCreatePathsForBundle)(CFStringRef restore_bundle_path,
     CFStringRef kernel_cache_type, CFStringRef boot_image_type, unsigned int
     unknown0, CFStringRef *firmware_dir_path, CFStringRef *
     kernelcache_restore_path, unsigned int unknown1, CFStringRef *
     ramdisk_path);
 
-unsigned int AMDeviceGetConnectionID(struct am_device *device);
-mach_error_t AMDeviceEnterRecovery(struct am_device *device);
-mach_error_t AMDeviceDisconnect(struct am_device *device);
-mach_error_t AMDeviceRetain(struct am_device *device);
-mach_error_t AMDeviceRelease(struct am_device *device);
-CFStringRef AMDeviceCopyValue(struct am_device *device, unsigned int, CFStringRef cfstring);
-CFStringRef AMDeviceCopyDeviceIdentifier(struct am_device *device);
+unsigned int (*AMDeviceGetConnectionID)(struct am_device *device);
+mach_error_t (*AMDeviceEnterRecovery)(struct am_device *device);
+mach_error_t (*AMDeviceDisconnect)(struct am_device *device);
+mach_error_t (*AMDeviceRetain)(struct am_device *device);
+mach_error_t (*AMDeviceRelease)(struct am_device *device);
+CFStringRef (*AMDeviceCopyValue)(struct am_device *device, unsigned int, CFStringRef cfstring);
+CFStringRef (*AMDeviceCopyDeviceIdentifier)(struct am_device *device);
 
 typedef void (*notify_callback)(CFStringRef notification, void *data);
 
-mach_error_t AMDPostNotification(service_conn_t socket, CFStringRef  notification, CFStringRef userinfo);
-mach_error_t AMDObserveNotification(void *socket, CFStringRef notification);
-mach_error_t AMDListenForNotifications(void *socket, notify_callback cb, void *data);
-mach_error_t AMDShutdownNotificationProxy(void *socket);
+mach_error_t (*AMDPostNotification)(service_conn_t socket, CFStringRef  notification, CFStringRef userinfo);
+mach_error_t (*AMDObserveNotification)(void *socket, CFStringRef notification);
+mach_error_t (*AMDListenForNotifications)(void *socket, notify_callback cb, void *data);
+mach_error_t (*AMDShutdownNotificationProxy)(void *socket);
                     
 /*edits by geohot*/
-mach_error_t AMDeviceDeactivate(struct am_device *device);
-mach_error_t AMDeviceActivate(struct am_device *device, CFMutableDictionaryRef);
+mach_error_t (*AMDeviceDeactivate)(struct am_device *device);
+mach_error_t (*AMDeviceActivate)(struct am_device *device, CFMutableDictionaryRef);
 /*end*/
 
-void *AMDeviceSerialize(struct am_device *device);
-void AMDAddLogFileDescriptor(int fd);
-mach_error_t AMDeviceSendMessage(service_conn_t socket, void *unused, CFPropertyListRef plist);
-mach_error_t AMDeviceReceiveMessage(service_conn_t socket, CFDictionaryRef options, CFPropertyListRef * result);
+void *(*AMDeviceSerialize)(struct am_device *device);
+void (*AMDAddLogFileDescriptor)(int fd);
+mach_error_t (*AMDeviceSendMessage)(service_conn_t socket, void *unused, CFPropertyListRef plist);
+mach_error_t (*AMDeviceReceiveMessage)(service_conn_t socket, CFDictionaryRef options, CFPropertyListRef * result);
 
 /* ----------------------------------------------------------------------------
  *   Semi-private routines

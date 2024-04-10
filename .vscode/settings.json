@@ -1,0 +1,9 @@
+{
+    "files.associations": {
+        "notes": "plaintext",
+        "corefoundationhelper.h": "c",
+        "ios": "c",
+        "core_foundation_utils.h": "c",
+        "sha.h": "c"
+    }
+}
