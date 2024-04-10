@@ -10,7 +10,7 @@ TODO: The current version will not re-activate a disabled iPhone/iPod Touch. I w
 
 ## Requirements:
 This tool currently only works on OS X (tested on 12.6 with an m1 macbook pro).
-Since I highly doubt that there is any demand for a iOS 3.1.3 passcode removal tool, it will stay this way. I only wrote this because I got a locked iPod form a flee-maket.
+Since I highly doubt that there is any demand for a iOS 3.1.3 passcode removal tool, it will stay this way. I only wrote this because I got a locked iPod from a flee-maket.
 
 ## Usage: 
 Connect your iPhone/iPod touch to your computer and simply run ./bypass
